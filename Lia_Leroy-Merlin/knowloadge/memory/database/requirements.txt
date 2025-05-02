@@ -1,0 +1,23 @@
+# pacotes main.py 
+langchain
+chromadb
+transformers
+sentence-transformers
+faiss-cpu
+python-dotenv
+pypdf2
+python-docx
+uvicorn
+fastapi
+# pacotes chat.py
+streamlit
+transformers
+sentence-transformers
+faiss-cpu
+langchain
+# pacotes chat.py
+streamlit
+transformers
+sentence-transformers
+faiss-cpu
+langchain
