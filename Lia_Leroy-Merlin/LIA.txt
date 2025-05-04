@@ -1,1 +1,26 @@
-[Usuário] ⇄ [Interface (CLI ou Web)] ⇄ [Módulo de NLP/IA] ⇄ [Base Knowloadge] ⇄ [Banco de Dados]
+LIA - Assistente Virtual da Leroy Merlin
+
+A LIA (Leroy Merlin Inteligente Assistente) é uma inteligência artificial desenvolvida para oferecer um suporte eficiente e automatizado a clientes e colaboradores da Leroy Merlin. Utilizando tecnologias avançadas de processamento de linguagem natural (PNL) e aprendizado de máquina, a LIA tem como objetivo proporcionar um atendimento de qualidade, rápido e acessível, tanto em questões relacionadas a produtos quanto a serviços oferecidos pela empresa.
+
+A LIA é projetada para entender as necessidades dos usuários e fornecer respostas precisas, com base em um vasto banco de dados de informações internas da Leroy Merlin, como características de produtos, políticas de devolução, serviços de entrega, instalação, entre outros. A LIA também pode ser usada para consultas sobre status de pedidos, orientações sobre projetos e assistência personalizada para encontrar as melhores soluções de compra.
+
+Setor de Atendimento da Leroy Merlin
+
+O setor de atendimento da Leroy Merlin é crucial para manter a satisfação dos clientes e garantir uma experiência positiva de compra. A empresa oferece múltiplos canais de atendimento, incluindo lojas físicas, canais online, e agora, com a implementação de tecnologias como a LIA, o atendimento digital é mais acessível e eficiente.
+
+No atendimento, a Leroy Merlin busca sempre personalizar a interação com o cliente, ouvindo suas necessidades e oferecendo soluções práticas e rápidas. Isso inclui uma rede de suporte com agentes treinados que podem lidar com dúvidas mais complexas, bem como sistemas automáticos que lidam com questões simples e rotineiras, como a verificação de estoque, o rastreamento de pedidos, e informações sobre produtos e serviços.
+
+Clientes da Leroy Merlin
+
+Os clientes da Leroy Merlin são predominantemente indivíduos e empresas envolvidas em projetos de construção, reforma e decoração. A Leroy Merlin atende tanto o consumidor final quanto profissionais do setor de construção, oferecendo uma ampla gama de produtos, desde materiais de construção até móveis, eletrodomésticos e itens de jardinagem.
+
+A empresa tem um foco especial em atender às necessidades de clientes que buscam soluções completas para seus projetos de casa e reforma, com produtos que atendem a diferentes orçamentos e estilos. Além disso, com o crescimento do e-commerce e a expansão do modelo omnicanal, a Leroy Merlin tem ampliado cada vez mais sua base de clientes, atendendo a um público diversificado que pode realizar suas compras online ou em loja física, com a flexibilidade de escolher entre diferentes métodos de pagamento e entrega.
+
+Modelo de Negócio da Leroy Merlin
+
+O modelo de negócio da Leroy Merlin é centrado na venda de produtos para construção, decoração e jardinagem, com um foco em fornecer uma experiência completa ao consumidor. A empresa adota um modelo omnichannel, permitindo que seus clientes façam compras tanto nas lojas físicas quanto pela plataforma online.
+
+A Leroy Merlin tem uma ampla rede de lojas físicas que servem como pontos de venda e distribuição, além de contar com uma forte presença digital através de seu e-commerce. A empresa também oferece uma série de serviços de valor agregado, como entrega, montagem e instalação de produtos, que ajudam a aumentar a conveniência para o cliente e a fidelização à marca.
+
+Além disso, o modelo de negócios da Leroy Merlin é sustentado pela diversificação de seus produtos e serviços, que abrangem desde materiais de construção pesados até soluções de decoração e jardinagem. A empresa também busca constantemente inovação, utilizando tecnologias de automação e inteligência artificial, como a LIA, para otimizar a experiência de compra e melhorar o atendimento ao cliente.
+

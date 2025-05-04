@@ -1,31 +1,48 @@
 from transformers import pipeline
+from langchain.prompts import PromptTemplate
 
-# Inicializar o modelo
-pipe = pipeline(
-    model='deepseek-ai/deepseek-llm-7b-chat',
-    task='text-generation',
-    model_kwargs={'temperature': 0.7, 'max_new_tokens': 512}
-)
+# Prompt customizado (caso queira importar para outros scripts)
+custom_prompt = PromptTemplate(
+    input_variables=["context", "question"],
+    template='''Você é a LIA, uma IA assistente da Leroy Merlin. Sua missão é ajudar colaboradores e clientes com respostas diretas e bem informadas, sempre com base no conteúdo da empresa.
 
-# Treinar o modelo
-pipe("Pergunta: Qual é a história da Leroy Merlin?")
-pipe("Pergunta: Quais são os valores da Leroy Merlin?")
-pipe("Pergunta: Quem são os fundadores da Leroy Merlin?")
-pipe("Pergunta: Quais são os produtos mais populares da Leroy Merlin?")
-pipe("Pergunta: Quais são as características dos produtos da Leroy Merlin?")
-pipe("Pergunta: Quais são as marcas que a Leroy Merlin vende?")
-pipe("Pergunta: Quais são os serviços oferecidos pela Leroy Merlin?")
-pipe("Pergunta: Como posso usar o serviço de entrega da Leroy Merlin?")
-pipe("Pergunta: Como posso usar o serviço de instalação da Leroy Merlin?")
-pipe("Pergunta: Quantos funcionários a Leroy Merlin tem?")
-pipe("Pergunta: Quais são os benefícios oferecidos aos funcionários da Leroy Merlin?")
-pipe("Pergunta: Como a Leroy Merlin treina seus funcionários?")
-pipe("Pergunta: Quem são os clientes da Leroy Merlin?")
-pipe("Pergunta: Como a Leroy Merlin trata seus clientes?")
-pipe("Pergunta: Quais são as políticas de devolução da Leroy Merlin?")
-pipe("Pergunta: Quais são as métricas de atendimento da Leroy Merlin?")
-pipe("Pergunta: Como a Leroy Merlin mede a satisfação do cliente?")
-pipe("Pergunta: Como a Leroy Merlin lida com reclamações de clientes?")
-pipe("Pergunta: Qual é o modelo de negócio da Leroy Merlin?")
-pipe("Pergunta: Como a Leroy Merlin ganha dinheiro?")
-pipe("Pergunta: Quais são os planos futuros da Leroy Merlin?") 
+Use a seguinte base de conhecimento como contexto:
+
+{context}
+
+Agora, responda a esta pergunta de forma clara e objetiva:
+
+{question}
+''')
+
+# Inicializa e retorna o pipeline do modelo DeepSeek
+def load_deepseek_pipeline():
+    return pipeline(
+        model='deepseek-ai/deepseek-llm-7b-chat',
+        task='text-generation',
+        model_kwargs={'temperature': 0.5}
+    )
+
+# Função de teste simples
+def test_deepseek():
+    try:
+        print("Iniciando o carregamento do modelo...")
+        pipe = load_deepseek_pipeline()
+        
+        # Adicione o contexto aqui
+        context = "A Leroy Merlin é uma empresa de varejo de materiais de construção que oferece uma ampla gama de produtos e serviços, incluindo entrega e instalação."
+        
+        # Pergunta que você deseja fazer
+        question = "O que ela oferece em termos de serviços e produtos?"
+        
+        # Chamada ao modelo com o contexto
+        response = pipe(f"{context} {question}")
+        
+        print("Modelo carregado com sucesso.")
+        print("Texto gerado:", response[0]['generated_text'])
+    except Exception as e:
+        print(f"Ocorreu um erro: {e}")
+
+# Teste unitário direto se rodar standalone
+if __name__ == "__main__":
+    test_deepseek()
