@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIA - Assistente de Atendimento Leroy Merlin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --leroy-blue: #005baa;
+            --leroy-orange: #ff6d00;
+            --leroy-light: #f5f5f5;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .chat-container {
+            height: calc(100vh - 180px);
+        }
+        
+        .message-animation {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .typing-indicator span {
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .scrollbar-hidden::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Popup styles */
+        #lia-popup-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: none;
+        }
+        
+        #lia-popup {
+            width: 380px;
+            height: 600px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        
+        #lia-popup.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        #lia-launcher {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--leroy-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 91, 170, 0.3);
+            z-index: 9998;
+            transition: all 0.2s ease;
+        }
+        
+        #lia-launcher:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 91, 170, 0.4);
+        }
+        
+        #lia-launcher i {
+            transition: all 0.2s ease;
+        }
+        
+        #lia-launcher.active i {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Standalone Chat Version -->
+    <div class="flex h-screen overflow-hidden" id="lia-standalone">
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <!-- Top navigation -->
+            <div class="flex items-center justify-between h-16 px-4 border-b border-gray-200 bg-white">
+                <div class="flex items-center">
+                    <h1 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <img src="https://www.leroymerlin.com.br/static/leroy-merlin/images/logo-icon.svg" alt="LIA" class="h-6 mr-2">
+                        LIA - Assistente de Atendimento
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <span class="w-2 h-2 mr-1 rounded-full bg-green-500"></span>
+                            Online
+                        </span>
+                    </div>
+                    <button class="p-1 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Chat area -->
+            <div class="flex flex-col flex-1 overflow-hidden bg-[var(--leroy-light)]">
+                <div class="chat-container overflow-y-auto p-4 space-y-4 scrollbar-hidden" id="chat-messages">
+                    <!-- Welcome message -->
+                    <div class="message-animation flex items-start">
+                        <div class="flex-shrink-0">
+                            <img class="h-8 w-8 rounded-full" src="https://www.leroymerlin.com.br/static/leroy-merlin/images/logo-icon.svg" alt="LIA">
+                        </div>
+                        <div class="ml-3">
+                            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 max-w-3xl">
+                                <div class="flex items-center">
+                                    <span class="font-semibold text-[var(--leroy-blue)]">LIA Atendimento</span>
+                                    <span class="ml-2 text-xs text-gray-500">Agora</span>
+                                </div>
+                                <div class="mt-1 text-gray-700">
+                                    <p>Olá! Eu sou a LIA, sua assistente de atendimento da Leroy Merlin. Estou aqui para te ajudar com:</p>
+                                    <ul class="mt-2 list-disc pl-5 space-y-1">
+                                        <li>Consultas de produtos e estoque</li>
+                                        <li>Políticas de troca e devolução</li>
+                                        <li>Informações sobre entregas</li>
+                                        <li>Orientações sobre serviços</li>
+                                        <li>Respostas para dúvidas frequentes</li>
+                                    </ul>
+                                    <p class="mt-2">Como posso te ajudar hoje?</p>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <button class="suggestion-btn px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200">Qual a política de troca?</button>
+                                <button class="suggestion-btn px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200">Como rastrear uma entrega?</button>
+                                <button class="suggestion-btn px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200">Quais documentos para devolução?</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input area -->
+                <div class="border-t border-gray-200 px-4 pt-4 pb-4 sm:px-6 bg-white">
+                    <div class="flex items-center space-x-2">
+                        <button class="p-2 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <div class="relative flex-grow">
+                            <textarea id="message-input" rows="1" class="block w-full rounded-md border-gray-300 pl-4 pr-12 py-3 resize-none focus:border-[var(--leroy-blue)] focus:ring-[var(--leroy-blue)]" placeholder="Digite sua mensagem..."></textarea>
+                            <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
+                                <button id="send-button" class="inline-flex items-center rounded px-2 py-1 text-sm font-medium text-[var(--leroy-blue)] hover:bg-gray-50">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="p-2 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Version (hidden by default) -->
+    <div id="lia-popup-container">
+        <div id="lia-popup">
+            <div class="flex flex-col h-full">
+                <!-- Popup header -->
+                <div class="flex items-center justify-between h-16 px-4 bg-[var(--leroy-blue)] text-white">
+                    <div class="flex items-center">
+                        <img src="https://www.leroymerlin.com.br/static/leroy-merlin/images/logo-icon.svg" alt="LIA" class="h-6 mr-2">
+                        <span class="font-semibold">LIA Atendimento</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <span class="w-2 h-2 mr-1 rounded-full bg-green-500"></span>
+                            Online
+                        </span>
+                        <button id="lia-minimize" class="p-1 text-white rounded-full hover:bg-blue-700 focus:outline-none">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <button id="lia-close" class="p-1 text-white rounded-full hover:bg-blue-700 focus:outline-none">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Popup chat area -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--leroy-light)] scrollbar-hidden" id="popup-chat-messages">
+                    <!-- Welcome message -->
+                    <div class="message-animation flex items-start">
+                        <div class="flex-shrink-0">
+                            <img class="h-8 w-8 rounded-full" src="https://www.leroymerlin.com.br/static/leroy-merlin/images/logo-icon.svg" alt="LIA">
+                        </div>
+                        <div class="ml-3">
+                            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 max-w-xs">
+                                <div class="flex items-center">
+                                    <span class="font-semibold text-[var(--leroy-blue)]">LIA Atendimento</span>
+                                    <span class="ml-2 text-xs text-gray-500">Agora</span>
+                                </div>
+                                <div class="mt-1 text-gray-700">
+                                    <p>Olá! Eu sou a LIA, sua assistente de atendimento da Leroy Merlin. Como posso te ajudar hoje?</p>
+                                </div>
+                            </div>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <button class="popup-suggestion-btn px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200">Política de troca</button>
+                                <button class="popup-suggestion-btn px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200">Rastrear entrega</button>
+                                <button class="popup-suggestion-btn px-3 py-1 text-xs font-medium rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200">Agendar serviço</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Popup input area -->
+                <div class="border-t border-gray-200 px-4 pt-3 pb-3 bg-white">
+                    <div class="flex items-center space-x-2">
+                        <button class="p-2 text-gray-400 rounded-full hover:text-gray-500 focus:outline-none">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <div class="relative flex-grow">
+                            <textarea id="popup-message-input" rows="1" class="block w-full rounded-md border-gray-300 pl-3 pr-10 py-2 text-sm resize-none focus:border-[var(--leroy-blue)] focus:ring-[var(--leroy-blue)]" placeholder="Digite sua mensagem..."></textarea>
+                            <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
+                                <button id="popup-send-button" class="inline-flex items-center rounded px-2 text-xs font-medium text-[var(--leroy-blue)] hover:bg-gray-50">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Launcher button for popup -->
+    <div id="lia-launcher">
+        <i class="fas fa-headset"></i>
+    </div>
+
+    <script>
+        // Memory for conversation context
+        const conversationMemory = {
+            lastMessages: [],
+            customerInfo: null,
+            currentTopic: null,
+            productInquiry: null
+        };
+
+        // Simulated product database
+        const productDatabase = {
+            "12345": {
+                name: "Tinta Coral Premium Branco Gelo 3,6L",
+                price: 129.90,
+                stock: 15,
+                category: "Tintas",
+                description: "Tinta acrílica premium para paredes internas, rendimento de 40m² por demão, acabamento fosco."
+            },
+            "67890": {
+                name: "Piso Laminado Quick Step Elegance 3G Castanho 8mm",
+                price: 59.90,
+                stock: 42,
+                category: "Pisos",
+                description: "Piso laminado com tecnologia resistente a arranhões, fácil instalação click, 10 anos de garantia."
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we should show standalone or popup version
+            const urlParams = new URLSearchParams(window.location.search);
+            const isPopup = urlParams.get('popup') === 'true';
+            
+            if (isPopup) {
+                document.getElementById('lia-standalone').style.display = 'none';
+                initializePopupChat();
+            } else {
+                document.getElementById('lia-popup-container').style.display = 'none';
+                document.getElementById('lia-launcher').style.display = 'none';
+                initializeStandaloneChat();
+            }
+            
+            // Initialize launcher button
+            const launcher = document.getElementById('lia-launcher');
+            const popupContainer = document.getElementById('lia-popup-container');
+            const popup = document.getElementById('lia-popup');
+            
+            launcher.addEventListener('click', function() {
+                if (popupContainer.style.display === 'none') {
+                    popupContainer.style.display = 'block';
+                    setTimeout(() => {
+                        popup.classList.add('active');
+                    }, 10);
+                    launcher.classList.add('active');
+                } else {
+                    popup.classList.remove('active');
+                    setTimeout(() => {
+                        popupContainer.style.display = 'none';
+                    }, 300);
+                    launcher.classList.remove('active');
+                }
+            });
+            
+            document.getElementById('lia-close').addEventListener('click', function() {
+                popup.classList.remove('active');
+                setTimeout(() => {
+                    popupContainer.style.display = 'none';
+                }, 300);
+                launcher.classList.remove('active');
+            });
+            
+            document.getElementById('lia-minimize').addEventListener('click', function() {
+                popup.classList.remove('active');
+                setTimeout(() => {
+                    popupContainer.style.display = 'none';
+                }, 300);
+                launcher.classList.remove('active');
+            });
+        });
+        
+        function initializeStandaloneChat() {
+            const messageInput = document.getElementById('message-input');
+            const sendButton = document.getElementById('send-button');
+            const chatContainer = document.getElementById('chat-messages');
+            const suggestionButtons = document.querySelectorAll('.suggestion-btn');
+            
+            setupChat(messageInput, sendButton, chatContainer, suggestionButtons);
+        }
+        
+        function initializePopupChat() {
+            const messageInput = document.getElementById('popup-message-input');
+            const sendButton = document.getElementById('popup-send-button');
+            const chatContainer = document.getElementById('popup-chat-messages');
+            const suggestionButtons = document.querySelectorAll('.popup-suggestion-btn');
+            
+            setupChat(messageInput, sendButton, chatContainer, suggestionButtons);
+        }
+        
+        function setupChat(inputElement, sendButton, chatContainer, suggestionButtons) {
+            // Auto-resize textarea
+            inputElement.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+            
+            // Send message on Enter (but allow Shift+Enter for new lines)
+            inputElement.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Send message on button click
+            sendButton.addEventListener('click', sendMessage);
+            
+            // Suggestion buttons
+            suggestionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    inputElement.value = this.textContent;
+                    inputElement.focus();
+                });
+            });
+            
+            function sendMessage() {
+                const message = inputElement.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessageToChat(message, 'user');
+                
+                // Add to conversation memory
+                conversationMemory.lastMessages.push({
+                    role: 'user',
+                    content: message
+                });
+                
+                // Limit memory to last 10 messages
+                if (conversationMemory.lastMessages.length > 10) {
+                    conversationMemory.lastMessages.shift();
+                }
+                
+                inputElement.value = '';
+                inputElement.style.height = 'auto';
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Generate response (simulated API call)
+                setTimeout(() => {
+                    // Remove typing indicator
+                    removeTypingIndicator();
+                    
+                    // Generate intelligent response based on context
+                    const response = generateIntelligentResponse(message);
+                    
+                    // Add AI response to chat
+                    addMessageToChat(response, 'lia');
+                    
+                    // Add to conversation memory
+                    conversationMemory.lastMessages.push({
+                        role: 'assistant',
+                        content: response
+                    });
+                }, 800 + Math.random() * 800); // Random delay to simulate thinking
+            }
+            
+            function generateIntelligentResponse(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Analyze conversation context
+                updateConversationContext(message);
+                
+                // Check if we're in the middle of a specific task
+                if (conversationMemory.currentTopic === 'product_inquiry' && conversationMemory.productInquiry) {
+                    if (lowerMessage.includes("sim") || lowerMessage.includes("quero") || lowerMessage.includes("detalhes")) {
+                        const product = productDatabase[conversationMemory.productInquiry];
+                        return `Ótimo! Aqui estão os detalhes do produto:<br><br>
+                        <strong>${product.name}</strong><br>
+                        <strong>Preço:</strong> R$ ${product.price.toFixed(2)}<br>
+                        <strong>Estoque:</strong> ${product.stock} unidades<br>
+                        <strong>Categoria:</strong> ${product.category}<br>
+                        <strong>Descrição:</strong> ${product.description}<br><br>
+                        Posso te ajudar com algo mais sobre este produto?`;
+                    } else if (lowerMessage.includes("não") || lowerMessage.includes("outro")) {
+                        conversationMemory.productInquiry = null;
+                        return "Entendi. Você gostaria de consultar outro produto ou posso te ajudar com outra coisa?";
+                    }
+                }
+                
+                // Product inquiry
+                if (lowerMessage.includes("produto") || lowerMessage.includes("código") || 
+                    (lowerMessage.includes("consultar") && !conversationMemory.currentTopic)) {
+                    const productCode = extractProductCode(message);
+                    
+                    if (productCode) {
+                        if (productDatabase[productCode]) {
+                            conversationMemory.currentTopic = 'product_inquiry';
+                            conversationMemory.productInquiry = productCode;
+                            return `Encontrei o produto com código ${productCode}. Gostaria de ver os detalhes deste produto?`;
+                        } else {
+                            return `Não encontrei nenhum produto com o código ${productCode}. Por favor, verifique o código e tente novamente ou me informe o nome do produto.`;
+                        }
+                    } else {
+                        return "Você pode me informar o código ou nome do produto que deseja consultar?";
+                    }
+                }
+                
+                // Política de troca
+                if (lowerMessage.includes("troca") || lowerMessage.includes("trocas") || 
+                    lowerMessage.includes("devolver") || lowerMessage.includes("devolução")) {
+                    conversationMemory.currentTopic = 'return_policy';
+                    return `A política de troca da Leroy Merlin permite a troca de produtos dentro de <strong>30 dias</strong> a partir da data da compra, desde que:<br><br>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>O produto esteja na embalagem original</li>
+                        <li>Com todas as etiquetas e acessórios</li>
+                        <li>Apresente a nota fiscal</li>
+                        <li>Não tenha sido instalado ou usado</li>
+                    </ul><br>
+                    Para produtos especiais (como cortes sob medida), o prazo é de <strong>7 dias</strong>. Posso te ajudar com algo mais específico sobre trocas?`;
+                }
+                
+                // Rastreamento de entrega
+                if (lowerMessage.includes("rastrear") || lowerMessage.includes("entrega") || 
+                    lowerMessage.includes("entregas") || lowerMessage.includes("pedido")) {
+                    conversationMemory.currentTopic = 'delivery_tracking';
+                    return `Para rastrear uma entrega, siga estes passos:<br><br>
+                    <ol class="list-decimal pl-5 space-y-1">
+                        <li>Acesse <a href="https://www.leroymerlin.com.br/minha-conta" class="text-[var(--leroy-blue)] underline" target="_blank">Minha Conta</a> no site</li>
+                        <li>Vá em "Meus Pedidos"</li>
+                        <li>Selecione o pedido desejado</li>
+                        <li>Clique em "Acompanhar Entrega"</li>
+                    </ol><br>
+                    Se o cliente não tiver cadastro, você pode usar o número do pedido e CPF para consultar no <a href="https://www.leroymerlin.com.br/rastreamento" class="text-[var(--leroy-blue)] underline" target="_blank">rastreador de pedidos</a>. Precisa do status de algum pedido específico?`;
+                }
+                
+                // Agendamento de serviços
+                if (lowerMessage.includes("agendar") || lowerMessage.includes("serviço") || 
+                    lowerMessage.includes("instalação") || lowerMessage.includes("montagem")) {
+                    conversationMemory.currentTopic = 'service_scheduling';
+                    return `Para agendar serviços de instalação ou montagem:<br><br>
+                    <strong>1. Online:</strong><br>
+                    - Durante a compra, selecione a opção "Com instalação"<br>
+                    - Ou acesse <a href="https://www.leroymerlin.com.br/servicos" class="text-[var(--leroy-blue)] underline" target="_blank">Serviços Leroy Merlin</a><br><br>
+                    <strong>2. Telefone:</strong><br>
+                    - Central de Atendimento: 3003-0110 (capitais) ou 0800-601-0110 (demais localidades)<br><br>
+                    <strong>3. Na loja:</strong><br>
+                    - Fale com nosso time de serviços<br><br>
+                    Os serviços estão disponíveis para produtos adquiridos na Leroy Merlin. Posso verificar disponibilidade para um produto específico?`;
+                }
+                
+                // Promoções
+                if (lowerMessage.includes("promoção") || lowerMessage.includes("desconto") || 
+                    lowerMessage.includes("ofertas") || lowerMessage.includes("preço")) {
+                    conversationMemory.currentTopic = 'promotions';
+                    return `As promoções atuais incluem:<br><br>
+                    <strong>1. Tintas:</strong> 20% de desconto em tintas Coral e Suvinil<br>
+                    <strong>2. Ferramentas:</strong> Kit de ferramentas com até 30% off<br>
+                    <strong>3. Banheiro:</strong> Conjuntos de louças com desconto progressivo<br>
+                    <strong>4. Cartão LM:</strong> Parcelamento em 10x sem juros em toda loja<br><br>
+                    Para ver todas as ofertas, acesse <a href="https://www.leroymerlin.com.br/ofertas" class="text-[var(--leroy-blue)] underline" target="_blank">leroymerlin.com.br/ofertas</a>. Quer saber sobre promoção de algum produto específico?`;
+                }
+                
+                // Default response with context awareness
+                if (conversationMemory.lastMessages.length > 0) {
+                    const lastUserMessage = conversationMemory.lastMessages[conversationMemory.lastMessages.length - 1].content;
+                    
+                    if (lastUserMessage.includes("?")) {
+                        return `Sobre "${lastUserMessage}", posso te informar que na Leroy Merlin temos políticas claras para garantir sua satisfação. Posso te explicar melhor sobre algum tópico específico?`;
+                    }
+                }
+                
+                return `Entendi sua solicitação. Como assistente de atendimento, posso te ajudar com:<br><br>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Informações sobre produtos e estoque</li>
+                    <li>Orientações sobre trocas e devoluções</li>
+                    <li>Status de pedidos e entregas</li>
+                    <li>Agendamento de serviços</li>
+                    <li>Promoções e condições de pagamento</li>
+                </ul><br>
+                Poderia me dar mais detalhes sobre o que precisa?`;
+            }
+            
+            function extractProductCode(message) {
+                // Simple regex to find potential product codes (5 digits)
+                const codeMatch = message.match(/\b\d{5}\b/);
+                return codeMatch ? codeMatch[0] : null;
+            }
+            
+            function updateConversationContext(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // Detect topic changes
+                if (lowerMessage.includes("produto") || lowerMessage.includes("código")) {
+                    conversationMemory.currentTopic = 'product_inquiry';
+                } else if (lowerMessage.includes("troca") || lowerMessage.includes("devolução")) {
+                    conversationMemory.currentTopic = 'return_policy';
+                } else if (lowerMessage.includes("entrega") || lowerMessage.includes("pedido")) {
+                    conversationMemory.currentTopic = 'delivery_tracking';
+                } else if (lowerMessage.includes("serviço") || lowerMessage.includes("instalação")) {
+                    conversationMemory.currentTopic = 'service_scheduling';
+                } else if (lowerMessage.includes("promoção") || lowerMessage.includes("desconto")) {
+                    conversationMemory.currentTopic = 'promotions';
+                } else if (lowerMessage.includes("obrigado") || lowerMessage.includes("agradeço")) {
+                    conversationMemory.currentTopic = null;
+                }
+            }
+            
+            function addMessageToChat(message, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-animation flex items-start';
+                
+                if (sender === 'user') {
+                    messageDiv.innerHTML = `
+                        <div class="flex-shrink-0">
+                            <img class="h-8 w-8 rounded-full" src="https://ui-avatars.com/api/?name=Atendente&background=005baa&color=fff" alt="Atendente">
+                        </div>
+                        <div class="ml-3">
+                            <div class="bg-[var(--leroy-blue)] p-4 rounded-lg shadow-sm text-white max-w-3xl">
+                                <div class="flex items-center">
+                                    <span class="font-semibold">Você</span>
+                                    <span class="ml-2 text-xs text-blue-100">Agora</span>
+                                </div>
+                                <div class="mt-1">
+                                    ${message.replace(/\n/g, '<br>')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="flex-shrink-0">
+                            <img class="h-8 w-8 rounded-full" src="https://www.leroymerlin.com.br/static/leroy-merlin/images/logo-icon.svg" alt="LIA">
+                        </div>
+                        <div class="ml-3">
+                            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 max-w-3xl">
+                                <div class="flex items-center">
+                                    <span class="font-semibold text-[var(--leroy-blue)]">LIA Atendimento</span>
+                                    <span class="ml-2 text-xs text-gray-500">Agora</span>
+                                </div>
+                                <div class="mt-1 text-gray-700">
+                                    ${message}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'message-animation flex items-start';
+                typingDiv.id = 'typing-indicator';
+                typingDiv.innerHTML = `
+                    <div class="flex-shrink-0">
+                        <img class="h-8 w-8 rounded-full" src="https://www.leroymerlin.com.br/static/leroy-merlin/images/logo-icon.svg" alt="LIA">
+                    </div>
+                    <div class="ml-3">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 max-w-xs">
+                            <div class="flex items-center">
+                                <span class="font-semibold text-[var(--leroy-blue)]">LIA Atendimento</span>
+                            </div>
+                            <div class="mt-1 text-gray-700 typing-indicator">
+                                <span>.</span><span>.</span><span>.</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                chatContainer.appendChild(typingDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+            
+            function removeTypingIndicator() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

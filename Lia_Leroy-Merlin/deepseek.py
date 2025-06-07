@@ -6,7 +6,7 @@ custom_prompt = PromptTemplate(
     input_variables=["context", "question"],
     template='''Você é a LIA, uma IA assistente da Leroy Merlin. Sua missão é ajudar colaboradores e clientes com respostas diretas e bem informadas, sempre com base no conteúdo da empresa.
 
-Use a seguinte base de conhecimento como contexto:
+Use a seguinte base de conhecimento como contexto: 
 
 {context}
 
@@ -32,7 +32,6 @@ def test_deepseek():
         # Adicione o contexto aqui
         context = "A Leroy Merlin é uma empresa de varejo de materiais de construção que oferece uma ampla gama de produtos e serviços, incluindo entrega e instalação."
         
-        # Pergunta que você deseja fazer
         question = "O que ela oferece em termos de serviços e produtos?"
         
         # Chamada ao modelo com o contexto

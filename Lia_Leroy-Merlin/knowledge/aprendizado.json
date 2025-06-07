@@ -1,0 +1,41 @@
+{
+    "interacoes": [
+        {
+            "timestamp": "2025-06-06T19:16:17.170427",
+            "user_input": "Quais são os melhores produtos para reforma de banheiro?",
+            "response": "Desculpe, ocorreu um erro ao gerar a resposta. Por favor, tente novamente.",
+            "feedback": 0.0
+        },
+        {
+            "timestamp": "2025-06-06T19:16:19.136595",
+            "user_input": "Quais são os melhores produtos para reforma de banheiro?",
+            "response": "Desculpe, ocorreu um erro ao gerar a resposta. Por favor, tente novamente.",
+            "feedback": 1.0
+        },
+        {
+            "timestamp": "2025-06-06T19:18:44.747649",
+            "user_input": "Quais são os melhores produtos para reforma de banheiro?",
+            "response": "Desculpe, ocorreu um erro ao gerar a resposta. Por favor, tente novamente.",
+            "feedback": 1.0
+        },
+        {
+            "timestamp": "2025-06-06T19:18:46.283591",
+            "user_input": "Quais são os melhores produtos para reforma de banheiro?",
+            "response": "Desculpe, ocorreu um erro ao gerar a resposta. Por favor, tente novamente.",
+            "feedback": 0.0
+        },
+        {
+            "timestamp": "2025-06-06T19:20:28.400547",
+            "user_input": "Quais são os melhores produtos para reforma de banheiro?",
+            "response": "Desculpe, ocorreu um erro ao gerar a resposta. Por favor, tente novamente.",
+            "feedback": 0.0
+        },
+        {
+            "timestamp": "2025-06-06T19:20:30.939503",
+            "user_input": "Quais são os melhores produtos para reforma de banheiro?",
+            "response": "Desculpe, ocorreu um erro ao gerar a resposta. Por favor, tente novamente.",
+            "feedback": 1.0
+        }
+    ],
+    "novo_conhecimento": {}
+}

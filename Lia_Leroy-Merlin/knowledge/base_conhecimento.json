@@ -1,0 +1,124 @@
+{
+    "categorias": {
+        "construcao": {
+            "materiais": {
+                "cimento": {
+                    "tipos": ["CP-I", "CP-II", "CP-III", "CP-IV", "CP-V"],
+                    "usos": ["Fundação", "Alvenaria", "Reboco", "Contrapiso"],
+                    "dicas": [
+                        "Sempre verifique a data de fabricação",
+                        "Armazene em local seco",
+                        "Use luvas e máscara ao manipular"
+                    ]
+                },
+                "tintas": {
+                    "tipos": ["Acrílica", "PVA", "Esmalte", "Verniz"],
+                    "usos": ["Paredes", "Teto", "Madeira", "Metal"],
+                    "dicas": [
+                        "Prepare a superfície antes de pintar",
+                        "Use rolo para grandes áreas",
+                        "Pincele para detalhes"
+                    ]
+                }
+            },
+            "ferramentas": {
+                "manuais": {
+                    "tipos": ["Martelo", "Chave de fenda", "Alicate", "Nível"],
+                    "usos": ["Instalações", "Reparos", "Medições"],
+                    "dicas": [
+                        "Mantenha as ferramentas organizadas",
+                        "Limpe após o uso",
+                        "Verifique a qualidade antes de comprar"
+                    ]
+                },
+                "eletricas": {
+                    "tipos": ["Furadeira", "Serra elétrica", "Lixadeira"],
+                    "usos": ["Furação", "Corte", "Acabamento"],
+                    "dicas": [
+                        "Use EPI adequado",
+                        "Verifique a voltagem",
+                        "Mantenha as lâminas afiadas"
+                    ]
+                }
+            }
+        },
+        "decoracao": {
+            "moveis": {
+                "tipos": ["Sala", "Quarto", "Cozinha", "Banheiro"],
+                "estilos": ["Moderno", "Rústico", "Clássico", "Minimalista"],
+                "dicas": [
+                    "Meça o espaço antes de comprar",
+                    "Considere a iluminação",
+                    "Harmonize com a decoração existente"
+                ]
+            },
+            "iluminacao": {
+                "tipos": ["Lâmpadas LED", "Lustres", "Arandelas", "Spots"],
+                "usos": ["Iluminação geral", "Destaque", "Ambiente"],
+                "dicas": [
+                    "Escolha a temperatura de cor adequada",
+                    "Considere o consumo de energia",
+                    "Planeje a distribuição dos pontos de luz"
+                ]
+            }
+        },
+        "jardim": {
+            "plantas": {
+                "tipos": ["Ornamentais", "Hortaliças", "Árvores", "Flores"],
+                "cuidados": [
+                    "Rega adequada",
+                    "Exposição ao sol",
+                    "Adubação",
+                    "Poda"
+                ]
+            },
+            "ferramentas": {
+                "tipos": ["Pá", "Enxada", "Tesoura de poda", "Regador"],
+                "usos": ["Plantio", "Manutenção", "Colheita"],
+                "dicas": [
+                    "Limpe após o uso",
+                    "Armazene em local seco",
+                    "Mantenha as ferramentas afiadas"
+                ]
+            }
+        }
+    },
+    "servicos": {
+        "instalacao": {
+            "tipos": ["Elétrica", "Hidráulica", "Gás", "Ar condicionado"],
+            "dicas": [
+                "Contrate profissionais qualificados",
+                "Verifique as certificações",
+                "Peça orçamento detalhado"
+            ]
+        },
+        "reforma": {
+            "tipos": ["Pintura", "Pisos", "Paredes", "Telhado"],
+            "dicas": [
+                "Planeje o orçamento",
+                "Defina o prazo",
+                "Escolha materiais de qualidade"
+            ]
+        }
+    },
+    "dicas_gerais": {
+        "planejamento": [
+            "Faça um orçamento detalhado",
+            "Defina um cronograma",
+            "Pesquise preços",
+            "Verifique a qualidade dos materiais"
+        ],
+        "seguranca": [
+            "Use EPI adequado",
+            "Siga as instruções dos produtos",
+            "Mantenha o local organizado",
+            "Tenha um kit de primeiros socorros"
+        ],
+        "economia": [
+            "Compare preços",
+            "Aproveite promoções",
+            "Compre em quantidade",
+            "Reutilize materiais quando possível"
+        ]
+    }
+} 
